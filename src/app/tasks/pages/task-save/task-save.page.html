@@ -8,17 +8,20 @@
 </ion-header>
 
 <ion-content class="ion-text-center">
-  <ion-item>
-    <ion-icon name="newspaper-outline" slot="start" color="primary"></ion-icon>
-    <ion-input
-      type="text"
-      placeholder="Title"
-      autofocus="true"
-      inputmode="text"
-    >
-    </ion-input>
-  </ion-item>
-  <ion-button expand="full" type="submit">
-    Save
-  </ion-button>
+  <form [formGroup]="taskForm" (submit)="onSubmit()">
+    <ion-item>
+      <ion-icon name="newspaper-outline" slot="start" color="primary"></ion-icon>
+      <ion-input
+        type="text"
+        placeholder="Title"
+        autofocus="true"
+        inputmode="text"
+        formControlName="title"
+      >
+      </ion-input>
+    </ion-item>
+    <ion-button expand="full" type="submit" [disabled]="taskForm.invalid">
+      Save
+    </ion-button>
+  </form>
 </ion-content>
