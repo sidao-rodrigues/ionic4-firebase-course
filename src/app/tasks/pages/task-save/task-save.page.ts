@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { TasksService } from '../../services/tasks.service';
 import { NavController } from '@ionic/angular';
+import { OverlayService } from 'src/app/core/services/overlay.service';
 
 @Component({
   selector: 'app-task-save',
@@ -15,6 +16,7 @@ export class TaskSavePage implements OnInit {
   constructor(
     private fb: FormBuilder,
     private tasksService: TasksService,
+    private overlayService: OverlayService,
     private navCtrl: NavController
   ) { }
 
@@ -30,11 +32,20 @@ export class TaskSavePage implements OnInit {
   }
 
   public async onSubmit(): Promise<void> {
+    const loading = await this.overlayService.loading({
+      message: 'Saving...'
+    });
     try {
       const task = await this.tasksService.create(this.taskForm.value);
       this.navCtrl.navigateBack(['/tasks']);
     } catch (error) {
       console.log('Error saving Taks: ', error);
+      await this.overlayService.toast({
+        message: error.message,
+        buttons: ['Ok']
+      });
+    } finally {
+      loading.dismiss();
     }
   }
 
