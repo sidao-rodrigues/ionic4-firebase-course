@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Component } from '@angular/core';
+import { Observable } from 'rxjs';
+import { take } from 'rxjs/operators';
 import { Task } from '../../models/task.model';
 
 import { TasksService } from '../../services/tasks.service';
@@ -17,8 +18,10 @@ export class TaskListPage {
 
   constructor(private tasksService: TasksService, private navCtrl: NavController, private overlaySerive: OverlayService) { }
 
-  ionViewDidEnter(): void {
+  async ionViewDidEnter(): Promise<void> {
+    const loading = await this.overlaySerive.loading();
     this.tasks$ = this.tasksService.getAll();
+    this.tasks$.pipe(take(1)).subscribe(tasks => loading.dismiss());
   }
 
   onUpdate(task: Task): void {
@@ -41,6 +44,15 @@ export class TaskListPage {
         },
         'No'
       ]
+    });
+  }
+
+  async onDone(task: Task): Promise<void> {
+    const taskToUpdate = {...task, done: !task.done };
+    await this.tasksService.update(taskToUpdate);
+    await this.overlaySerive.toast({
+      message: `Task "${task.title}" ${taskToUpdate.done ? 'completed' : 'updated'}!`,
+      buttons: ['Ok']
     });
   }
 }
