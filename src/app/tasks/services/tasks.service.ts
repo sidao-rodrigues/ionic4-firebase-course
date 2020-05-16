@@ -1,9 +1,16 @@
 import { Injectable } from '@angular/core';
 
+import { Firestore } from '../../core/classes/firestore.class';
+import { Task } from '../models/task.model';
+import { AngularFirestore } from '@angular/fire/firestore';
+
 @Injectable({
   providedIn: 'root'
 })
-export class TasksService {
+export class TasksService extends Firestore<Task>{
 
-  constructor() { }
+  constructor(protected db: AngularFirestore) { 
+    super(db);
+  }
+
 }
