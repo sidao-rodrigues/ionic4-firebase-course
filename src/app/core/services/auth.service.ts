@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { auth } from 'firebase';
+import { Observable } from 'rxjs';
+
 import { User, AuthProvider, AuthOptions } from './auth.types';
 
 @Injectable({
@@ -8,7 +10,11 @@ import { User, AuthProvider, AuthOptions } from './auth.types';
 })
 export class AuthService {
 
-  constructor(private aAuth: AngularFireAuth) { }
+  public authState$: Observable<firebase.User>;
+
+  constructor(private aAuth: AngularFireAuth) { 
+    this.authState$ = this.aAuth.authState;
+  }
 
   public authenticate({ isSignIn, provider, user }: AuthOptions): Promise<auth.UserCredential> {
     let operation: Promise<auth.UserCredential>;
