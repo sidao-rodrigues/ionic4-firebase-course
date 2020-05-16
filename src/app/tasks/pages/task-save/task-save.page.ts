@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { TasksService } from '../../services/tasks.service';
+import { NavController } from '@ionic/angular';
 
 @Component({
   selector: 'app-task-save',
@@ -13,7 +14,8 @@ export class TaskSavePage implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private tasksService: TasksService
+    private tasksService: TasksService,
+    private navCtrl: NavController
   ) { }
 
   ngOnInit() {
@@ -30,7 +32,7 @@ export class TaskSavePage implements OnInit {
   public async onSubmit(): Promise<void> {
     try {
       const task = await this.tasksService.create(this.taskForm.value);
-      console.log('Task created', task);
+      this.navCtrl.navigateBack(['/tasks']);
     } catch (error) {
       console.log('Error saving Taks: ', error);
     }
