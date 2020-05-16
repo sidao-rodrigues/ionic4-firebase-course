@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { auth } from 'firebase';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 import { User, AuthProvider, AuthOptions } from './auth.types';
 
@@ -14,6 +15,10 @@ export class AuthService {
 
   constructor(private aAuth: AngularFireAuth) { 
     this.authState$ = this.aAuth.authState;
+  }
+
+  public get isAuthenticate(): Observable<boolean> {
+    return this.authState$.pipe(map(user => user !== null));
   }
 
   public authenticate({ isSignIn, provider, user }: AuthOptions): Promise<auth.UserCredential> {
