@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-login',
@@ -23,6 +23,14 @@ export class LoginPage implements OnInit {
     });
   }
   
+  public get email(): FormControl {
+    return <FormControl>this.authForm.get('email');
+  }
+
+  public get password(): FormControl {
+    return <FormControl>this.authForm.get('password');
+  }
+
   public onSubmit(): void {
     console.log('AuthForm: ', this.authForm.value);
   }
