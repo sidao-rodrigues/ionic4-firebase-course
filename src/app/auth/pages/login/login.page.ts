@@ -2,6 +2,7 @@ import { Component, OnInit, Provider } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { AuthService } from 'src/app/core/services/auth.service';
 import { AuthProvider } from 'src/app/core/services/auth.types';
+import { OverlayService } from 'src/app/core/services/overlay.service';
 
 @Component({
   selector: 'app-login',
@@ -19,7 +20,7 @@ export class LoginPage implements OnInit {
   };
   private nameControl = new FormControl('', [Validators.required, Validators.minLength(3)]);
 
-  constructor(private authService: AuthService, private fb: FormBuilder) { }
+  constructor(private authService: AuthService, private fb: FormBuilder, private overlayService: OverlayService) { }
 
   ngOnInit(): void {
     this.createForm();
@@ -56,6 +57,8 @@ export class LoginPage implements OnInit {
   }
 
   public async onSubmit(provider: AuthProvider): Promise<void> {
+    const loading = await this.overlayService.loading();
+    
     try {
       const credentials = await this.authService.authenticate({
         isSignIn: this.configs.isSignIn,
@@ -66,6 +69,12 @@ export class LoginPage implements OnInit {
       console.log('Redirecting...');
     } catch (error) {
       console.log('Auth error: ', error);
+      await this.overlayService.alert({
+        message: error.message,
+        buttons: ['Ok']
+      });
+    } finally {
+      loading.dismiss();
     }
   }
 }

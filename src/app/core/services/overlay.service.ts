@@ -33,6 +33,13 @@ export class OverlayService {
     const toast = await this.toastCtrl.create({
       position: 'bottom',
       duration: 3000,
+      /*buttons: [{
+        text: 'Mimic Close',
+        cssClass: 'button-color-changed',
+        handler: () => {
+          console.log('Cancel clicked');
+        }
+      }],*/
       //showCloseButton: true,
       //closeButtonText: 'Ok',
       ...options
