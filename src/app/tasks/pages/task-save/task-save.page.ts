@@ -3,6 +3,9 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { TasksService } from '../../services/tasks.service';
 import { NavController } from '@ionic/angular';
 import { OverlayService } from 'src/app/core/services/overlay.service';
+import { ActivatedRoute } from '@angular/router';
+
+import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-task-save',
@@ -12,16 +15,37 @@ import { OverlayService } from 'src/app/core/services/overlay.service';
 export class TaskSavePage implements OnInit {
 
   public taskForm: FormGroup;
+  public pageTitle = '...';
+  public taskId: string = undefined;
 
   constructor(
     private fb: FormBuilder,
     private tasksService: TasksService,
     private overlayService: OverlayService,
-    private navCtrl: NavController
+    private navCtrl: NavController,
+    private route: ActivatedRoute
   ) { }
 
   ngOnInit() {
     this.createForm();
+    this.init();
+  }
+
+  public init(): void {
+    const taskId = this.route.snapshot.paramMap.get('id');
+    if(!taskId) {
+      this.pageTitle = 'Create Task';
+      return;
+    }
+    this.taskId = taskId;
+    this.pageTitle = 'Edit Task';
+    this.tasksService
+      .get(taskId)
+      .pipe(take(1))
+      .subscribe(({ title, done }) => {
+        this.taskForm.get('title').setValue(title);
+        this.taskForm.get('done').setValue(done);
+      });
   }
 
   public createForm(): void {
